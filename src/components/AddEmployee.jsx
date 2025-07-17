@@ -1,19 +1,23 @@
 import { useState } from "react";
-import axios from "axios"; 
+import axios from "axios"; // Don't forget to install axios: npm install axios
 
-const Signup = () => {
+const AddEmployee = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
-  const [roleNames, setRoles] = useState(["USER"]); 
+  const [roleNames, setRoles] = useState(["USER"]); // Default to 'USER' if no roles selected
+
   const handleRoleChange = (e) => {
     const { value, checked } = e.target;
     setRoles((prevRoles) => {
       if (checked) {
+        // Add role if checked, ensuring no duplicates
         return [...new Set([...prevRoles, value])];
       } else {
+        // Remove role if unchecked, ensuring 'USER' is always present if no others are selected
         const newRoles = prevRoles.filter((role) => role !== value);
+        // If no roles are selected, default to 'USER'
         return newRoles.length === 0 && value !== "USER" ? ["USER"] : newRoles;
       }
     });
@@ -27,6 +31,7 @@ const Signup = () => {
       email,
       password,
       userName,
+      // Ensure roleNames is always an array, and contains "USER" if nothing else is chosen
       roleNames: roleNames.length > 0 ? roleNames : ["USER"],
     };
 
@@ -37,11 +42,13 @@ const Signup = () => {
 
       alert("Registered Successfully!");
       console.log("Registration success:", response.data);
+
+      // Optionally clear the form after successful registration
       setName("");
       setEmail("");
       setPassword("");
       setUserName("");
-      setRoles(["USER"]); 
+      setRoles(["USER"]); // Reset roles to default
     } catch (error) {
       console.error("Registration Error:", error);
       if (error.response) {
@@ -58,9 +65,9 @@ const Signup = () => {
   };
 
   return (
-    <div className="container mt-5 mb-5" > 
+    <div className="container mt-5 mb-5" > {/* Added mb-5 for bottom margin */}
       <div className="row justify-content-center" >
-        <div className="col-md-7 col-lg-6" > 
+        <div className="col-md-7 col-lg-6" > {/* Adjusted column width slightly */}
           <div className="card shadow-lg p-4"style={{ backgroundColor: '#f8f9fa', color: 'black', border: '1px solid #555' }}>
             <div className="card-body" color='#fdf'>
               <h2 className="card-title text-center mb-4">Sign Up</h2>
@@ -130,8 +137,8 @@ const Signup = () => {
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label d-block">Assign Roles:</label> 
-                  <div className="d-flex gap-3"> 
+                  <label className="form-label d-block">Assign Roles:</label> {/* d-block makes label take full width */}
+                  <div className="d-flex gap-3"> {/* Use flexbox for spacing checkboxes */}
                     <div className="form-check">
                       <input
                         type="checkbox"
@@ -164,7 +171,7 @@ const Signup = () => {
                 </div>
 
                 <div className="d-grid gap-2 mt-4">
-                  <button type="submit" className="btn btn-success btn-lg">
+                  <button type="submit" className="btn btn-success btn-lg"> {/* Changed to btn-success for signup */}
                     Sign Up
                   </button>
                 </div>
@@ -177,4 +184,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default AddEmployee;

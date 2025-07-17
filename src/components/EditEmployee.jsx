@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Import useParams and useNavigate
+import { useParams, useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
 
 const EditEmployee = () => {
-  const { empId } = useParams(); // Get empId from the URL
+  const { empId } = useParams(); 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
@@ -11,7 +11,6 @@ const EditEmployee = () => {
   const [employee, setEmployee] = useState({
     name: '',
     email: '',
-    // Add other fields as per your Employee entity
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,7 +24,7 @@ const EditEmployee = () => {
       }
       if (role !== "ADMIN") {
         alert("Access Denied: You do not have permission to edit employees.");
-        navigate('/GetEmployees'); // Or wherever appropriate
+        navigate('/GetEmployees'); 
         return;
       }
 
@@ -35,7 +34,7 @@ const EditEmployee = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setEmployee(response.data); // Assuming response.data is the employee object
+        setEmployee(response.data);
       } catch (err) {
         console.error("Error fetching employee for edit:", err);
         setError("Failed to load employee data.");
@@ -54,7 +53,7 @@ const EditEmployee = () => {
     };
 
     fetchEmployee();
-  }, [empId, token, role, navigate]); // Dependencies for useEffect
+  }, [empId, token, role, navigate]); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,11 +74,11 @@ const EditEmployee = () => {
       await axios.put(`http://localhost:8080/employee/${empId}`, employee, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json', // Specify content type for PUT
+          'Content-Type': 'application/json', 
         },
       });
       alert("Employee updated successfully!");
-      navigate('/GetEmployees'); // Redirect back to the employee list
+      navigate('/employee'); 
     } catch (err) {
       console.error("Error updating employee:", err);
       alert("Failed to update employee: " + (err.response?.data?.message || err.message || "Unknown error"));
@@ -94,7 +93,7 @@ const EditEmployee = () => {
     return <div className="alert alert-danger mt-5">{error}</div>;
   }
 
-  // Render the form
+  
   return (
     <div className="container mt-5">
       <h2>Edit Employee: {employee.name}</h2>
@@ -123,9 +122,8 @@ const EditEmployee = () => {
             required
           />
         </div>
-        {/* Add more fields as needed, e.g., phone, address, etc. */}
         <button type="submit" className="btn btn-success me-2">Update Employee</button>
-        <button type="button" onClick={() => navigate('/GetEmployees')} className="btn btn-secondary">Cancel</button>
+        <button type="button" onClick={() => navigate('/employee')} className="btn btn-secondary">Cancel</button>
       </form>
     </div>
   );
