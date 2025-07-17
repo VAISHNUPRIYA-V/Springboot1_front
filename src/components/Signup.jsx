@@ -1,73 +1,186 @@
-// src/Signup.jsx
 import { useState } from "react";
+import axios from "axios"; // Don't forget to install axios: npm install axios
 
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
-  const[role,setRole]=useState("");
+  const [roleNames, setRoles] = useState(["USER"]); // Default to 'USER' if no roles selected
 
-  const handleSignup = async(e) => {
+  const handleRoleChange = (e) => {
+    const { value, checked } = e.target;
+    setRoles((prevRoles) => {
+      if (checked) {
+        // Add role if checked, ensuring no duplicates
+        return [...new Set([...prevRoles, value])];
+      } else {
+        // Remove role if unchecked, ensuring 'USER' is always present if no others are selected
+        const newRoles = prevRoles.filter((role) => role !== value);
+        // If no roles are selected, default to 'USER'
+        return newRoles.length === 0 && value !== "USER" ? ["USER"] : newRoles;
+      }
+    });
+  };
+
+  const handleSignup = async (e) => {
     e.preventDefault();
+
+    const userData = {
+      name,
+      email,
+      password,
+      userName,
+      // Ensure roleNames is always an array, and contains "USER" if nothing else is chosen
+      roleNames: roleNames.length > 0 ? roleNames : ["USER"],
+    };
+
+    console.log("Submitting:", userData);
+
     try {
-      await axios.post("https://springboot-employee-2.onrender.com/api/auth/register", form);
+      const response = await axios.post("http://localhost:8080/api/auth/register", userData);
+
       alert("Registered Successfully!");
+      console.log("Registration success:", response.data);
+
+      // Optionally clear the form after successful registration
+      setName("");
+      setEmail("");
+      setPassword("");
+      setUserName("");
+      setRoles(["USER"]); // Reset roles to default
     } catch (error) {
-      console.error("Registration Error", error);
-      alert("Error while registering");
+      console.error("Registration Error:", error);
+      if (error.response) {
+        console.error("Server response data:", error.response.data);
+        alert(`Error while registering: ${error.response.data.message || 'Check console for details.'}`);
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+        alert("Network error: No response from server. Check your internet connection or server status.");
+      } else {
+        console.error("Request setup error:", error.message);
+        alert("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
   return (
-    <section>
-      <h2>Sign Up</h2>
-      <div>
-        <form onSubmit={handleSignup}>
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            onChange={(e) => setName(e.target.value)}
-          />
-          <br />
-          <br/>
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <br />
-          <br/>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <br />
-          <br/>
-          <label htmlFor="userName">User Name</label>
-          <input
-            type="text"
-            id="userName"
-            onChange={(e) => setUserName(e.target.value)}
-          />
-          <br />
-           <br />
-          <label htmlFor="userRole">User Role</label>
-          <input
-            type="text"
-            id="userRole"
-            onChange={(e) => setUserRole(e.target.value)}
-          />
-          <br />
-          <br />
-          <button type="submit">Sign Up</button>
-        </form>
+    <div className="container mt-5 mb-5" > {/* Added mb-5 for bottom margin */}
+      <div className="row justify-content-center" >
+        <div className="col-md-7 col-lg-6" > {/* Adjusted column width slightly */}
+          <div className="card shadow-lg p-4"style={{ backgroundColor: '#f8f9fa', color: 'black', border: '1px solid #555' }}>
+            <div className="card-body" color='#fdf'>
+              <h2 className="card-title text-center mb-4">Sign Up</h2>
+              <form onSubmit={handleSignup}>
+                <div className="mb-3">
+                  <label htmlFor="name" className="form-label">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="form-control"
+                    placeholder="Enter your full name"
+                    required
+                    style={{ backgroundColor: '#444', color: 'white', border: '1px solid #666' }}
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="userName" className="form-label">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    id="userName"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    className="form-control"
+                    placeholder="Choose a username"
+                    required
+                    style={{ backgroundColor: '#444', color: 'white', border: '1px solid #666' }}
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="email" className="form-label">
+                    Email address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="form-control"
+                    placeholder="name@example.com"
+                    required
+                    style={{ backgroundColor: '#444', color: 'white', border: '1px solid #666' }}
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="password" className="form-label">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="form-control"
+                    placeholder="Create a password"
+                    required
+                    style={{ backgroundColor: '#444', color: 'white', border: '1px solid #666' }}
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label d-block">Assign Roles:</label> {/* d-block makes label take full width */}
+                  <div className="d-flex gap-3"> {/* Use flexbox for spacing checkboxes */}
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        id="roleUser"
+                        name="roleNames"
+                        value="USER"
+                        checked={roleNames.includes("USER")}
+                        onChange={handleRoleChange}
+                        className="form-check-input"
+                      />
+                      <label htmlFor="roleUser" className="form-check-label">
+                        User
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        id="roleAdmin"
+                        name="roleNames"
+                        value="ADMIN"
+                        checked={roleNames.includes("ADMIN")}
+                        onChange={handleRoleChange}
+                        className="form-check-input"
+                      />
+                      <label htmlFor="roleAdmin" className="form-check-label">
+                        Admin
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="d-grid gap-2 mt-4">
+                  <button type="submit" className="btn btn-success btn-lg"> {/* Changed to btn-success for signup */}
+                    Sign Up
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   );
 };
 
