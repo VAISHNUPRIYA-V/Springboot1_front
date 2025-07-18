@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Form } from 'react-bootstrap';
-
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 const ViewEmployeeDetails = () => {
   const { empId } = useParams();
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const ViewEmployeeDetails = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:8080/task/id/${empId}/tasks`, {
+        const response = await axios.get(`${backend_url}/task/id/${empId}/tasks`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -60,7 +60,7 @@ const ViewEmployeeDetails = () => {
   const handleStatusChange = async (taskId, newStatus) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/task/status/${taskId}`,
+        `${backend_url}/task/status/${taskId}`,
         { status: newStatus },
         {
           headers: {

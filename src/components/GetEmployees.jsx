@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button, Form } from "react-bootstrap";
-
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 const GetEmployees = () => {
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); 
@@ -17,7 +17,7 @@ const GetEmployees = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/employee", {
+        const response = await axios.get(`${backend_url}/employee`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -43,7 +43,7 @@ const GetEmployees = () => {
 
   const handleDelete = async (empId) => {
     try {
-      await axios.delete(`http://localhost:8080/employee/${empId}`, {
+      await axios.delete(`${backend_url}/employee/${empId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEmployees(employees.filter((emp) => emp.empId !== empId));
@@ -81,7 +81,7 @@ const GetEmployees = () => {
 
     try {
       await axios.post(
-        `http://localhost:8080/task/id/${employeeToAssignTask.empId}`,
+        `${backend_url}/task/id/${employeeToAssignTask.empId}`,
         { task: newTaskDescription },
         {
           headers: {

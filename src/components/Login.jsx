@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; 
 import { useEffect } from "react";
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 
 
@@ -17,7 +18,7 @@ useEffect(() => {
   async function handleLogin(event) {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/login", {
+      const response = await axios.post(`${backend_url}/api/auth/login`, {
         userName,
         password,
       });
@@ -31,7 +32,7 @@ useEffect(() => {
         localStorage.setItem('role', response.data.roles[0]); 
       }
       localStorage.setItem('userName', response.data.userName);
-      navigate('/Employee'); 
+      navigate('/employee'); 
       setUserName("");
       setPassword("");
 

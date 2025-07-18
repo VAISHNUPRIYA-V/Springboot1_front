@@ -1,23 +1,20 @@
 import { useState } from "react";
-import axios from "axios"; // Don't forget to install axios: npm install axios
-
+import axios from "axios"; 
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 const AddEmployee = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
-  const [roleNames, setRoles] = useState(["USER"]); // Default to 'USER' if no roles selected
+  const [roleNames, setRoles] = useState(["USER"]); 
 
   const handleRoleChange = (e) => {
     const { value, checked } = e.target;
     setRoles((prevRoles) => {
       if (checked) {
-        // Add role if checked, ensuring no duplicates
         return [...new Set([...prevRoles, value])];
       } else {
-        // Remove role if unchecked, ensuring 'USER' is always present if no others are selected
         const newRoles = prevRoles.filter((role) => role !== value);
-        // If no roles are selected, default to 'USER'
         return newRoles.length === 0 && value !== "USER" ? ["USER"] : newRoles;
       }
     });
@@ -31,24 +28,23 @@ const AddEmployee = () => {
       email,
       password,
       userName,
-      // Ensure roleNames is always an array, and contains "USER" if nothing else is chosen
       roleNames: roleNames.length > 0 ? roleNames : ["USER"],
     };
 
     console.log("Submitting:", userData);
 
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/register", userData);
+      const response = await axios.post(`${backend_url}/api/auth/register`, userData);
 
       alert("Registered Successfully!");
       console.log("Registration success:", response.data);
 
-      // Optionally clear the form after successful registration
+      
       setName("");
       setEmail("");
       setPassword("");
       setUserName("");
-      setRoles(["USER"]); // Reset roles to default
+      setRoles(["USER"]); 
     } catch (error) {
       console.error("Registration Error:", error);
       if (error.response) {
@@ -65,9 +61,9 @@ const AddEmployee = () => {
   };
 
   return (
-    <div className="container mt-5 mb-5" > {/* Added mb-5 for bottom margin */}
+    <div className="container mt-5 mb-5" > 
       <div className="row justify-content-center" >
-        <div className="col-md-7 col-lg-6" > {/* Adjusted column width slightly */}
+        <div className="col-md-7 col-lg-6" > 
           <div className="card shadow-lg p-4"style={{ backgroundColor: '#f8f9fa', color: 'black', border: '1px solid #555' }}>
             <div className="card-body" color='#fdf'>
               <h2 className="card-title text-center mb-4">Sign Up</h2>
@@ -137,8 +133,8 @@ const AddEmployee = () => {
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label d-block">Assign Roles:</label> {/* d-block makes label take full width */}
-                  <div className="d-flex gap-3"> {/* Use flexbox for spacing checkboxes */}
+                  <label className="form-label d-block">Assign Roles:</label> 
+                  <div className="d-flex gap-3"> 
                     <div className="form-check">
                       <input
                         type="checkbox"
@@ -171,7 +167,7 @@ const AddEmployee = () => {
                 </div>
 
                 <div className="d-grid gap-2 mt-4">
-                  <button type="submit" className="btn btn-success btn-lg"> {/* Changed to btn-success for signup */}
+                  <button type="submit" className="btn btn-success btn-lg"> 
                     Sign Up
                   </button>
                 </div>

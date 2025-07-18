@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios"; 
-
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -33,7 +33,7 @@ const Signup = () => {
     console.log("Submitting:", userData);
 
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/register", userData);
+      const response = await axios.post(`${backend_url}/api/auth/register`, userData);
 
       alert("Registered Successfully!");
       console.log("Registration success:", response.data);

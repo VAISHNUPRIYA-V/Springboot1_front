@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
-
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 const EditEmployee = () => {
   const { empId } = useParams(); 
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const EditEmployee = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:8080/employee/${empId}`, {
+        const response = await axios.get(`${backend_url}/employee/${empId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -71,7 +71,7 @@ const EditEmployee = () => {
     }
 
     try {
-      await axios.put(`http://localhost:8080/employee/${empId}`, employee, {
+      await axios.put(`${backend_url}/employee/${empId}`, employee, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json', 
